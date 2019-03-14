@@ -53,7 +53,7 @@ namespace Reflect2.Classes
             {
                 if (f_prop.Name == "Class" || f_prop.Name == "Weight")
                 {
-                    string t1 = "Break here";
+                    //string t1 = "Break here";
                 }
                 if (exclude_flds.Contains(f_prop.Name)){ continue; }
                 if (include_flds.Count() == 0 || include_flds.Contains(f_prop.Name))

@@ -22,25 +22,28 @@ namespace Reflect2.Controllers
         // checks for errors, updates the allowed fields on the db entity, updates the databases
         // and returns the updated values to the view.
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        //[OutputCache(Duration = 0)]
         public ActionResult Product(Product model)
         {
             using ( AdWorksDB adWorkCtx = new AdWorksDB())
             {
                 if (model.ProductID == 0)
-                { model = adWorkCtx.products.FirstOrDefault(); }
-                else
                 {
-                    Dictionary<String, String> modelErrors = GetModelErrors.GetErrors(ModelState);
-                    if (modelErrors.Count() == 0)
-                    {
-                        Product db_entity = adWorkCtx.products.Where(w=>w.ProductID == model.ProductID).FirstOrDefault();
-                        List<ModelUpdates> updates = GetModelUpdates.GetUpdates(model, db_entity, GetExcludeFields(), GetIncludeFields());
-                        db_entity.ModifiedDate = DateTime.Now;
-                        adWorkCtx.SaveChanges();
-                    }
+                    model = adWorkCtx.products.FirstOrDefault();
+                    return View(model);
                 }
+
+                Dictionary<String, String> modelErrors = GetModelErrors.GetErrors(ModelState);
+                if (modelErrors.Count() != 0)
+                { return View(model); }
+
+                Product db_entity = adWorkCtx.products.Where(w => w.ProductID == model.ProductID).FirstOrDefault();
+                List<ModelUpdates> updates = GetModelUpdates.GetUpdates(model, db_entity, GetExcludeFields(), GetIncludeFields());
+                db_entity.ModifiedDate = DateTime.Now;
+                adWorkCtx.SaveChanges();
+                ModelState.Clear();
+                return View(db_entity);
             }
-            return View(model);
         }
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -62,9 +65,9 @@ namespace Reflect2.Controllers
             List<string> rtn_list = new List<string>() { "Color",  };
             rtn_list.Add("Class");
             rtn_list.Add("Weight");
-            //rtn_list.Add("SellStartDate");
-            //rtn_list.Add("SellEndDate");
-            //rtn_list.Add("DiscontinuedDate");
+            rtn_list.Add("SellStartDate");
+            rtn_list.Add("SellEndDate");
+            rtn_list.Add("DiscontinuedDate");
             return rtn_list;
         }
 

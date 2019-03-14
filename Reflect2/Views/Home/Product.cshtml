@@ -5,44 +5,94 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>
-</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>
-        <span style="margin-right: 1em;">Product Name: @Model.Name </span>
-        <span>Product ID: @Model.ProductID</span>
-    </h4>    
-    <hr />
-    
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.ProductID)
 
-    <div class="col-xs-4">
-        @{Html.RenderPartial("Product1");}
-    </div>
+    <div class="form-horizontal text-center center-block ">
+        <h4>
+            <span class="bold">Product Name:</span> @Model.Name 
+            <span class="bold">Product ID:</span> @Model.ProductID
+        </h4>
+        <hr />
 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ProductID)
 
-    <div class="col-xs-4">
-        @{Html.RenderPartial("Product2");}
-    </div>
+        <div  id="div_page1"class="col-xs-4">
+            @{Html.RenderPartial("Product1", Model);}
+        </div>
 
-    <div class="col-xs-4">
-        @{Html.RenderPartial("Product3");}
-    </div>
-    <div>
+        <div id="div_page2" class="col-xs-4 hidden">
+            @{Html.RenderPartial("Product2", Model);}
+        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+        <div id="div_page3" class="col-xs-4 hidden">
+            @{Html.RenderPartial("Product3", Model);}
+        </div>
+
+        <div style="clear:both;"></div>
+        <div class="col-xs-12">
+            @Html.ActionLink("Page 1", "page1", null, new { onclick = "return ShowPage('1')" }) |
+            @Html.ActionLink("Page 2", "page1", null, new { onclick = "return ShowPage('2')" }) |
+            @Html.ActionLink("Page 3", "page1", null, new { onclick = "return ShowPage('3')" })
+        </div>
+
+        <div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default btn-primary" />
+                </div>
             </div>
         </div>
 
     </div>
-</div>
 }
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            console.log("ready to rock and roll....");
+        });
+
+        function ShowPage(page_no) {
+            console.log("showing page" + page_no);
+            switch (page_no) {
+                case "2":
+                    $("#div_page1").addClass("hidden");
+                    $("#div_page2").removeClass("hidden");
+                    $("#div_page3").addClass("hidden");
+                    break;
+                case "3":
+                    $("#div_page1").addClass("hidden");
+                    $("#div_page2").addClass("hidden");
+                    $("#div_page3").removeClass("hidden");
+                    break;
+                default:
+                    $("#div_page1").removeClass("hidden");
+                    $("#div_page2").addClass("hidden");
+                    $("#div_page3").addClass("hidden");
+                    break;
+            }
+            return false;
+        };
+
+        function AjaxPost() {
+            console.log("AjaxPost");
+            $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ManageAccounts", "Account")',
+                    contentType: "application/json; charset=utf-8",
+                    data: { 'para1': val1, 'para2': val2 },
+                    dataType: "json",
+                    success: function (cities) {
+                        console.log("cancel delete");
+                    }
+                });
+        }
+
+    </script>
+}
+
 
