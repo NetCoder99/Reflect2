@@ -1,0 +1,48 @@
+﻿@model Reflect2.Models.Product
+
+@{
+    ViewBag.Title = "Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    <h4>
+        <span style="margin-right: 1em;">Product Name: @Model.Name </span>
+        <span>Product ID: @Model.ProductID</span>
+    </h4>    
+    <hr />
+    
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.ProductID)
+
+    <div class="col-xs-4">
+        @{Html.RenderPartial("Product1");}
+    </div>
+
+
+    <div class="col-xs-4">
+        @{Html.RenderPartial("Product2");}
+    </div>
+
+    <div class="col-xs-4">
+        @{Html.RenderPartial("Product3");}
+    </div>
+    <div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+</div>
+}
+
