@@ -11,7 +11,6 @@ namespace Reflect2.Models
     {
         [NotMapped]
         public int PageNo { get; set; }
-
         public int ProductID { get; set; }
 
         [Required]
@@ -26,10 +25,8 @@ namespace Reflect2.Models
         public bool? MakeFlag { get; set; }
         [Required]
         public bool? FinishedGoodsFlag { get; set; }
-
         [StringLength(15)]
         public string Color { get; set; }
-
         public short SafetyStockLevel { get; set; }
         public short ReorderPoint { get; set; }
         [Column(TypeName = "money")]

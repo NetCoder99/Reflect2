@@ -39,6 +39,7 @@ namespace Reflect2.Controllers
             System.Threading.Thread.Sleep(1500);
             using ( AdWorksDB adWorkCtx = new AdWorksDB())
             {
+                // if no model id was passed as
                 if (model.ProductID == 0)
                 {
                     model = adWorkCtx.products.FirstOrDefault();
@@ -46,10 +47,14 @@ namespace Reflect2.Controllers
                     return View(model);
                 }
 
+                // this was a preliminary test, utilizing Generics, it will extract modelstate errors
+                // into and easy to used Dictionary object
                 Dictionary<String, String> modelErrors = GetModelErrors.GetErrors(ModelState);
                 if (modelErrors.Count() != 0)
                 { return View(model); }
 
+                // this is 'auto-update' call, fetch the corresponding data object from the database 
+                // call the 'auto-update' method and post the updates back to the database.
                 Product db_entity = adWorkCtx.products.Where(w => w.ProductID == model.ProductID).FirstOrDefault();
                 List<ModelUpdates> updates = GetModelUpdates.GetUpdates(model, db_entity, GetExcludeFields(), GetIncludeFields());
                 db_entity.ModifiedDate = DateTime.Now;
@@ -84,6 +89,20 @@ namespace Reflect2.Controllers
             rtn_list.Add("SellEndDate");
             rtn_list.Add("DiscontinuedDate");
             return rtn_list;
+        }
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        // Update the database model / entity, field by field for only those fields that I want 
+        // to update and that have changed. 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        private void  UpdDbFields(Product form_model, Product db_model)
+        {
+            if (form_model.Name != db_model.Name) { db_model.Name = form_model.Name; }
+            if (form_model.Class != db_model.Class) { db_model.Class = form_model.Class; }
+            if (form_model.Name != db_model.Style) { db_model.Style = form_model.Style; }
+            if (form_model.Weight != db_model.Weight) { db_model.Weight = form_model.Weight; }
+            if (form_model.SellStartDate != db_model.SellStartDate) { db_model.SellStartDate = form_model.SellStartDate; }
+            if (form_model.SellEndDate != db_model.SellEndDate) { db_model.SellEndDate = form_model.SellEndDate; }
+            if (form_model.DiscontinuedDate != db_model.DiscontinuedDate) { db_model.DiscontinuedDate = form_model.DiscontinuedDate; }
         }
 
 
