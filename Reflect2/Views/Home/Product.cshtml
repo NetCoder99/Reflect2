@@ -12,7 +12,7 @@
 
     <div class="form-horizontal text-center center-block ">
         <h4>
-            <span class="bold">Product Name:</span> @Model.Name 
+            <span class="bold">Product Name:</span> @Model.Name
             <span class="bold">Product ID:</span> @Model.ProductID
         </h4>
         <hr />
@@ -20,15 +20,15 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ProductID)
 
-        <div  id="div_page1"class="col-xs-4">
+        <div id="div_page1" class="col-xs-4">
             @{Html.RenderPartial("Product1", Model);}
         </div>
 
-        <div id="div_page2" class="col-xs-4 hidden">
+        <div id="div_page2" class="col-xs-4 d-none">
             @{Html.RenderPartial("Product2", Model);}
         </div>
 
-        <div id="div_page3" class="col-xs-4 hidden">
+        <div id="div_page3" class="col-xs-4 d-none">
             @{Html.RenderPartial("Product3", Model);}
         </div>
 
@@ -39,12 +39,9 @@
             @Html.ActionLink("Page 3", "page1", null, new { onclick = "return ShowPage('3')" })
         </div>
 
-        <div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default btn-primary" />
-                </div>
-            </div>
+        <div style="clear:both; margin-bottom:.5em;"></div>
+        <div class="col-xs-12">
+            <input type="submit" value="Save Updates" class="btn btn-default btn-primary" />
         </div>
 
     </div>
@@ -60,19 +57,19 @@
             console.log("showing page" + page_no);
             switch (page_no) {
                 case "2":
-                    $("#div_page1").addClass("hidden");
-                    $("#div_page2").removeClass("hidden");
-                    $("#div_page3").addClass("hidden");
+                    $("#div_page1").addClass("d-none");
+                    $("#div_page2").removeClass('d-none');
+                    $("#div_page3").addClass("d-none");
                     break;
                 case "3":
-                    $("#div_page1").addClass("hidden");
-                    $("#div_page2").addClass("hidden");
-                    $("#div_page3").removeClass("hidden");
+                    $("#div_page1").addClass("d-none");
+                    $("#div_page2").addClass("d-none");
+                    $("#div_page3").removeClass("d-none");
                     break;
                 default:
-                    $("#div_page1").removeClass("hidden");
-                    $("#div_page2").addClass("hidden");
-                    $("#div_page3").addClass("hidden");
+                    $("#div_page1").removeClass("d-none");
+                    $("#div_page2").addClass("d-none");
+                    $("#div_page3").addClass("d-none");
                     break;
             }
             return false;

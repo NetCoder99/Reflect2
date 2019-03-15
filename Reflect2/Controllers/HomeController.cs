@@ -16,6 +16,10 @@ namespace Reflect2.Controllers
             return View();
         }
 
+        public ActionResult Sales()
+        {
+            return View();
+        }
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         // for demostration only, a standard controller action, accepts the model from the view,
