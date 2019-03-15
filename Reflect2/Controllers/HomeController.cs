@@ -33,10 +33,10 @@ namespace Reflect2.Controllers
         // and returns the updated values to the view.
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         //[OutputCache(Duration = 0)]
-
         [HttpGet]
         public ActionResult Product(Product model)
         {
+            System.Threading.Thread.Sleep(1500);
             using ( AdWorksDB adWorkCtx = new AdWorksDB())
             {
                 if (model.ProductID == 0)
