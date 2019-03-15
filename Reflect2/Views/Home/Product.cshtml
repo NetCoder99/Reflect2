@@ -6,6 +6,7 @@
 }
 
 
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -19,8 +20,10 @@
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ProductID)
+        @Html.HiddenFor(model => model.PageNo, new { id = "PageNo" })
 
-        <div id="div_page1" class="col-xs-4">
+
+        <div id="div_page1" class="col-xs-4 d-none">
             @{Html.RenderPartial("Product1", Model);}
         </div>
 
@@ -34,9 +37,9 @@
 
         <div style="clear:both;"></div>
         <div class="col-xs-12">
-            @Html.ActionLink("Page 1", "page1", null, new { onclick = "return ShowPage('1')" }) |
-            @Html.ActionLink("Page 2", "page1", null, new { onclick = "return ShowPage('2')" }) |
-            @Html.ActionLink("Page 3", "page1", null, new { onclick = "return ShowPage('3')" })
+            @Html.ActionLink("Page 1", "page1", null, new { @onclick = "return ShowPage('1')", @class = "btn btn-info", @id = "lnk_page1" }) |
+            @Html.ActionLink("Page 2", "page1", null, new { @onclick = "return ShowPage('2')", @class = "btn btn-info", @id = "lnk_page2" }) |
+            @Html.ActionLink("Page 3", "page1", null, new { @onclick = "return ShowPage('3')", @class = "btn btn-info", @id = "lnk_page3" })
         </div>
 
         <div style="clear:both; margin-bottom:.5em;"></div>
@@ -51,43 +54,86 @@
     <script>
         $(document).ready(function () {
             console.log("ready to rock and roll....");
+            var page_no = $("#PageNo").val();
+            console.log("PageNo: " + page_no);
+            ShowPage(page_no.toString());
+
         });
 
         function ShowPage(page_no) {
             console.log("showing page" + page_no);
             switch (page_no) {
                 case "2":
+                    $("#PageNo").val(2);
                     $("#div_page1").addClass("d-none");
                     $("#div_page2").removeClass('d-none');
                     $("#div_page3").addClass("d-none");
+                    $("#lnk_page1").removeClass("btn-info");
+                    $("#lnk_page2").addClass("btn-info");
+                    $("#lnk_page3").removeClass("btn-info");
                     break;
                 case "3":
+                    $("#PageNo").val(3);
                     $("#div_page1").addClass("d-none");
                     $("#div_page2").addClass("d-none");
                     $("#div_page3").removeClass("d-none");
+                    $("#lnk_page1").removeClass("btn-info");
+                    $("#lnk_page2").removeClass("btn-info");
+                    $("#lnk_page3").addClass("btn-info");
                     break;
                 default:
+                    $("#PageNo").val(1);
                     $("#div_page1").removeClass("d-none");
                     $("#div_page2").addClass("d-none");
                     $("#div_page3").addClass("d-none");
+                    $("#lnk_page1").addClass("btn-info");
+                    $("#lnk_page2").removeClass("btn-info");
+                    $("#lnk_page3").removeClass("btn-info");
                     break;
             }
             return false;
         };
 
-        function AjaxPost() {
-            console.log("AjaxPost");
-            $.ajax({
-                    type: "GET",
-                    url: '@Url.Action("ManageAccounts", "Account")',
-                    contentType: "application/json; charset=utf-8",
-                    data: { 'para1': val1, 'para2': val2 },
-                    dataType: "json",
-                    success: function (cities) {
-                        console.log("cancel delete");
-                    }
-                });
+        function OnBegin() {
+            $(".small_inp_box").prop("disabled", true);
+            $("input:password").prop("disabled", true);
+            $("#btn_submit").prop("disabled", true);
         }
+
+        function OnSuccess(redirectUrl) {
+            $(".small_inp_box").prop("disabled", false);
+            $("#btn_submit").prop("disabled", false);
+            $("#btn_submit").text("Login");
+            console.log("OnSuccess:" + redirectUrl.responseJSON.url);
+            if (redirectUrl.status == 200) {
+                window.location.href = redirectUrl.responseJSON.url;
+            }
+        }
+
+        function OnFailure(xhr, status) {
+            console.log("OnFailure");
+
+            console.log(xhr.status);
+            console.log(xhr.responseJSON.param1 + ":" + xhr.responseJSON.param2);
+
+            if (xhr.responseJSON.param1 == "UserName") {
+                //$("#UserNameError").text(xhr.responseJSON.param2);
+                //$("#UserName").removeClass("lgreen");
+                //$("#UserName").addClass("lred");
+            }
+            if (xhr.responseJSON.param1 == "Password") {
+                //$("#PassWordError").text(xhr.responseJSON.param2);
+                //$("#PassWord").removeClass("lgreen");
+                //$("#PassWord").addClass("lred");
+            }
+
+            $(".small_inp_box:first").focus();
+            $(".small_inp_box").prop("disabled", false);
+            $("#btn_submit").prop("disabled", false);
+            $("#btn_submit").text("Login");
+
+        }
+
 
     </script>
 }

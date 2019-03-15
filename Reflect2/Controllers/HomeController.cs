@@ -11,11 +11,17 @@ namespace Reflect2.Controllers
 {
     public class HomeController : Controller
     {
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        // Stub: to be filled in later
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         public ActionResult Index()
         {
             return View();
         }
 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        // Stub: to be filled in later
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         public ActionResult Sales()
         {
             return View();
@@ -27,6 +33,8 @@ namespace Reflect2.Controllers
         // and returns the updated values to the view.
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         //[OutputCache(Duration = 0)]
+
+        [HttpGet]
         public ActionResult Product(Product model)
         {
             using ( AdWorksDB adWorkCtx = new AdWorksDB())
@@ -34,6 +42,7 @@ namespace Reflect2.Controllers
                 if (model.ProductID == 0)
                 {
                     model = adWorkCtx.products.FirstOrDefault();
+                    model.PageNo = 1;
                     return View(model);
                 }
 
@@ -66,8 +75,10 @@ namespace Reflect2.Controllers
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         private List<string> GetIncludeFields()
         {
-            List<string> rtn_list = new List<string>() { "Color",  };
+            List<string> rtn_list = new List<string>() { "Color" };
+            rtn_list.Add("PageNo");
             rtn_list.Add("Class");
+            rtn_list.Add("Style");
             rtn_list.Add("Weight");
             rtn_list.Add("SellStartDate");
             rtn_list.Add("SellEndDate");

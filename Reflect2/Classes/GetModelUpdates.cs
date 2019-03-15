@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Web.Mvc;
 
 namespace Reflect2.Classes
 {
@@ -30,6 +31,7 @@ namespace Reflect2.Classes
 
     public class GetModelUpdates
     {
+
         public static List<ModelUpdates> GetUpdates<T>(T form_model, T db_model) where T : class
         {
             return GetUpdates(form_model, db_model, null, null);
@@ -39,6 +41,7 @@ namespace Reflect2.Classes
         {
             return GetUpdates(form_model, db_model, exclude_flds, null);
         }
+
 
         public static List<ModelUpdates> GetUpdates<T>(T view_model, T db_model, List<string> exclude_flds, List<string> include_flds) where T : class
         {
@@ -74,40 +77,6 @@ namespace Reflect2.Classes
                         rtn_list.Add(tmp_update);
                     }
 
-                    //// deal with nullables ...
-                    //if (f_prop.PropertyType.Name.Contains("Nullable"))
-                    //{
-                    //    if (f_obj != null && d_obj == null)
-                    //    { d_prop.SetValue(db_model, f_obj); }
-                    //    if (f_obj == null && d_obj != null)
-                    //    { d_prop.SetValue(db_model, null); }
-                    //    if (f_obj != d_obj)
-                    //    { d_prop.SetValue(db_model, f_obj); }
-                    //}
-                    //// strings can also be null
-                    //if (f_prop.PropertyType.Name.Contains("String"))
-                    //{
-                    //    if (f_obj != null && d_obj == null)
-                    //    { d_prop.SetValue(db_model, f_obj); }
-                    //    if (f_obj == null && d_obj != null)
-                    //    { d_prop.SetValue(db_model, null); }
-                    //    if (f_obj != d_obj)
-                    //    { d_prop.SetValue(db_model, f_obj); }
-                    //}
-
-
-
-                    //if (f_obj.ToString() != d_obj.ToString())
-                    //    {
-                    //        ModelUpdates tmp_update = new ModelUpdates();
-                    //        tmp_update.field_name = f_prop.Name;
-                    //        tmp_update.old_value = d_obj.ToString();
-                    //        tmp_update.new_value = f_obj.ToString();
-                    //        rtn_list.Add(tmp_update);
-                    //        d_prop.SetValue(db_model, f_obj);
-
-                    //    }
-                    //}
                 }
             }
             return rtn_list;
