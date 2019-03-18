@@ -64,31 +64,50 @@ namespace Reflect2.Classes
 
             foreach (PropertyInfo f_prop in form_props)
             {
-                if (f_prop.Name == "Class" || f_prop.Name == "Weight")
-                {
-                    //string t1 = "Break here";
-                }
+                PropertyInfo d_prop = db_props.Find(f => f.Name == f_prop.Name);
+
+                if (f_prop.GetMethod == null) { continue; }
                 if (exclude_flds.Contains(f_prop.Name)) { continue; }
-                if (include_flds.Count() == 0 || include_flds.Contains(f_prop.Name))
+                if (!(include_flds.Count() == 0 || include_flds.Contains(f_prop.Name))) { continue; }
+
+                object f_obj = f_prop.GetValue(view_model, null);
+                object d_obj = d_prop.GetValue(db_model, null);
+
+                if (f_obj == null && d_obj == null) { continue; }
+
+                if (f_obj != null && d_obj == null)
                 {
-                    var f_obj = f_prop.GetValue(view_model, null);
-                    PropertyInfo d_prop = db_props.Find(f => f.Name == f_prop.Name);
-                    var d_obj = d_prop.GetValue(db_model, null);
-
-                    if (f_obj != d_obj)
-                    {
-                        d_prop.SetValue(db_model, f_obj);
-                        ModelUpdates tmp_update = new ModelUpdates();
-                        tmp_update.field_name = f_prop.Name;
-                        tmp_update.field_name = f_prop.Name;
-                        tmp_update.old_value = d_obj;
-                        tmp_update.new_value = f_obj;
-                        rtn_list.Add(tmp_update);
-                    }
-
+                    d_prop.SetValue(db_model, f_obj);
+                    UpdateRtnList(f_prop.Name, f_obj, d_obj, rtn_list);
                 }
+
+                else if (f_obj == null && d_obj != null)
+                {
+                    d_prop.SetValue(db_model, f_obj);
+                    UpdateRtnList(f_prop.Name, f_obj, d_obj, rtn_list);
+                }
+
+                else if (f_obj.ToString() != d_obj.ToString())
+                {
+                    d_prop.SetValue(db_model, f_obj);
+                    UpdateRtnList(f_prop.Name, f_obj, d_obj, rtn_list);
+                }
+
             }
             return rtn_list;
         }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        // update the return list, moved to function for reuse
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        private static void UpdateRtnList(string prop_name, object f_obj, object d_obj, List<ModelUpdates> rtn_list)
+        {
+            ModelUpdates tmp_update = new ModelUpdates();
+            tmp_update.field_name = prop_name;
+            tmp_update.old_value = d_obj;
+            tmp_update.new_value = f_obj;
+            rtn_list.Add(tmp_update);
+        }
+
     }
 }
